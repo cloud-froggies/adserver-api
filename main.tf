@@ -21,6 +21,13 @@ provider "aws" {
   region = var.aws_region
 }
 
+## importing default vpc
+resource "aws_default_vpc" "default" {
+  tags = {
+    Name = "Default VPC"
+  }
+}
+
 resource "random_pet" "lambda_bucket_name" {
   prefix = "advertisers-api-functions"
   length = 4
@@ -32,7 +39,6 @@ resource "aws_s3_bucket" "lambda_bucket" {
   acl           = "private"
   force_destroy = true
 }
-
 
 data "archive_file" "lambda_advertisers_get" {
   type = "zip"
@@ -92,4 +98,3 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.lambda_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
-

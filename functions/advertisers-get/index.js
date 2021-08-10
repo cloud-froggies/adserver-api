@@ -7,11 +7,11 @@ exports.handler = async (event) => {
     if (typeof connection === 'undefined') {
         try {
             connection = await mysql.createConnection({
-                host: 'host.rds.amazonaws.com',
-                user: 'user',
-                password: 'password',
+                host: 'froggy-db.cc9gjm0rmktt.us-east-2.rds.amazonaws.com',
+                user: 'admin',
+                password: 'L0stNexus6',
                 database: 'configuration'
-            });
+            });    
         }
         catch(err) {
             console.log(err);

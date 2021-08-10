@@ -1,4 +1,5 @@
 # Local .terraform directories
+variables.tf
 .terraform.lock.hcl
 **/.terraform/*
 
