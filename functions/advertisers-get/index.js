@@ -3,23 +3,33 @@ var mysql = require('mysql2/promise');
 var connection;
 
 exports.handler = async (event) => {
+    console.log(event);
     if (typeof connection === 'undefined') {
-        connection = await mysql.createConnection({
-            host: 'host.rds.amazonaws.com',
-            user: 'user',
-            password: 'password',
-            database: 'configuration'
-        });
+        try {
+            connection = await mysql.createConnection({
+                host: 'host.rds.amazonaws.com',
+                user: 'user',
+                password: 'password',
+                database: 'configuration'
+            });
+        }
+        catch(err) {
+            console.log(err);
+            throw new Error(JSON.stringify({"status": 500, "messages": ['Database connection error']}));
+        }
     }
 
+    var rows;
+    var fields;
     try {
-        var response = await connection.query('SELECT * FROM advertisers');
-		console.log(response);
+        [rows, fields] = await connection.query('SELECT * FROM advertisers');
     }
-    catch (err) {
+    catch(err) {
         console.log(err);
-        throw new Error(err);
+        throw new Error(JSON.stringify({"status": 500, "messages": ['Database query error']}));
     }
-
-
+    if (rows.length > 0)
+        return {"status": 200, "response": rows};
+    else
+        throw new Error(JSON.stringify({"status": 404, "messages": ['No advertisers']}));
 }
