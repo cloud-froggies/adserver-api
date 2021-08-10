@@ -4,12 +4,16 @@ var connection;
 
 exports.handler = async (event) => {
     console.log(event);
+    console.log(process.env.db_endpoint)
+    console.log(process.env.db_admin_user)
+    console.log(process.env.db_admin_password)
+
     if (typeof connection === 'undefined') {
         try {
             connection = await mysql.createConnection({
-                host: 'froggy-db.cc9gjm0rmktt.us-east-2.rds.amazonaws.com',
-                user: 'admin',
-                password: 'L0stNexus6',
+                host: process.env.db_endpoint,
+                user: process.env.db_admin_user,
+                password: process.env.db_admin_password,
                 database: 'configuration'
             });    
         }
