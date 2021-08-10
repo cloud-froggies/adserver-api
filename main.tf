@@ -222,6 +222,27 @@ resource "aws_cloudwatch_log_group" "advertisers_get" {
 
 resource "aws_iam_role" "lambda_exec" {
   name = "serverless_lambda"
+  
+  inline_policy {
+    name = "vpc_access_policy"
+
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = [
+            "ec2:DescribeNetworkInterfaces",
+            "ec2:CreateNetworkInterface",
+            "ec2:DeleteNetworkInterface",
+            "ec2:DescribeInstances",
+            "ec2:AttachNetworkInterface"
+          ]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+      ]
+    })
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
