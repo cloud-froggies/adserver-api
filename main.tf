@@ -177,6 +177,13 @@ data "archive_file" "lambda_advertisers_get" {
   output_path = "${path.module}/functions/advertisers-get.zip"
 }
 
+data "archive_file" "lambda_advertisers_post" {
+  type = "zip"
+
+  source_dir  = "${path.module}/functions/advertisers-post"
+  output_path = "${path.module}/functions/advertisers-post.zip"
+}
+
 resource "aws_s3_bucket_object" "lambda_advertisers_get" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
@@ -186,6 +193,14 @@ resource "aws_s3_bucket_object" "lambda_advertisers_get" {
   etag = filemd5(data.archive_file.lambda_advertisers_get.output_path)
 }
 
+resource "aws_s3_bucket_object" "lambda_advertisers_post" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "advertisers-post.zip"
+  source = data.archive_file.lambda_advertisers_post.output_path
+
+  etag = filemd5(data.archive_file.lambda_advertisers_post.output_path)
+}
 
 resource "aws_lambda_function" "advertisers_get" {
   function_name = "advertisers-get"
@@ -207,7 +222,34 @@ resource "aws_lambda_function" "advertisers_get" {
 
   environment {
     variables = {
-      db_endpoint = var.db_endpoint
+      db_endpoint = aws_db_instance.default.address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_lambda_function" "advertisers_post" {
+  function_name = "advertisers-post"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.lambda_advertisers_post.key
+
+  runtime = "nodejs14.x"
+  handler = "index.handler"
+
+  source_code_hash = data.archive_file.lambda_advertisers_post.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id, aws_default_subnet.default_az3.id]
+    security_group_ids = [ aws_security_group.adserver_api_sg.id ]
+  }
+
+  environment {
+    variables = {
+      db_endpoint = aws_db_instance.default.address
       db_admin_user = var.db_admin_user
       db_admin_password = var.db_admin_password
     }
