@@ -173,15 +173,15 @@ resource "aws_s3_bucket" "lambda_bucket" {
 data "archive_file" "lambda_advertisers_get" {
   type = "zip"
 
-  source_dir  = "${path.module}/functions/advertisers-get"
-  output_path = "${path.module}/functions/advertisers-get.zip"
+  source_dir  = "${path.root}/src/functions/advertisers-get"
+  output_path = "${path.root}/src/functions/advertisers-get.zip"
 }
 
 data "archive_file" "lambda_advertisers_post" {
   type = "zip"
 
-  source_dir  = "${path.module}/functions/advertisers-post"
-  output_path = "${path.module}/functions/advertisers-post.zip"
+  source_dir  = "${path.root}/src/functions/advertisers-post"
+  output_path = "${path.root}/src/functions/advertisers-post.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_advertisers_get" {
