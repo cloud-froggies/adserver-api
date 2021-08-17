@@ -4,10 +4,6 @@ var connection;
 
 exports.handler = async (event) => {
     console.log(event);
-    console.log(process.env.db_endpoint)
-    console.log(process.env.db_admin_user)
-    console.log(process.env.db_admin_password)
-
     if (typeof connection === 'undefined') {
         try {
             connection = await mysql.createConnection({
