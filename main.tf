@@ -173,3 +173,14 @@ module "lambda_functions" {
   subnets = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id, aws_default_subnet.default_az3.id]
   security_groups  = [ aws_security_group.adserver_api_sg.id ]
 }
+
+# ------------------ api-gateway --------------------------------------------------
+
+
+module "api_gateway" {
+  source = "./modules/api-gateway"
+
+  advertisers_get_invoke = module.lambda_functions.advertisers_get_invoke
+  advertisers_get_name = module.lambda_functions.function_name_advertisers_get
+  
+}
