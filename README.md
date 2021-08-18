@@ -8,7 +8,11 @@ deactivate
 cd ..
 zip -r advertisers-advertiser-id-get.zip advertisers-advertiser-id-get
 
-chmod ugo+rwx $PWD
+chmod -R 644 $PWD
+chmod -R 755 $PWD
+chmod -R ugo+rwx $PWD
+ls -ls
+zipinfo advertisers-advertiser-id-get.zip
 
 # Deploy commands
 terraform init
