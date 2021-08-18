@@ -18,7 +18,10 @@ output "function_name_advertisers_post" {
   value = aws_lambda_function.advertisers_post.function_name
 }
 
-
 output "advertisers_get_invoke" {
   value = aws_lambda_function.advertisers_get.invoke_arn
+}
+
+output "advertisers_post_invoke" {
+  value = aws_lambda_function.advertisers_post.invoke_arn
 }

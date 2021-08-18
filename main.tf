@@ -182,5 +182,8 @@ module "api_gateway" {
 
   advertisers_get_invoke = module.lambda_functions.advertisers_get_invoke
   advertisers_get_name = module.lambda_functions.function_name_advertisers_get
+
+  advertisers_post_invoke = module.lambda_functions.advertisers_post_invoke
+  advertisers_post_name = module.lambda_functions.function_name_advertisers_post
   
 }
