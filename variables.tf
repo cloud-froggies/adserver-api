@@ -38,3 +38,10 @@ variable "froggy_tunnel_public_ssh_key" {
     type = string
     sensitive = true
 }
+
+variable "db_name" {
+  description = "DB name."
+
+  type    = string
+  default = "froggy-db"
+}

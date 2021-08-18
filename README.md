@@ -1,11 +1,14 @@
 # Dev commands
 virtualenv venv
+
 source venv/bin/activate
 pip3 freeze > requirements.txt         
 pip install -r requirements.txt -t $PWD
 deactivate
 cd ..
 zip -r advertisers-advertiser-id-get.zip advertisers-advertiser-id-get
+
+chmod ugo+rwx $PWD
 
 # Deploy commands
 terraform init
