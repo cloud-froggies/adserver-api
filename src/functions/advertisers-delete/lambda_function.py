@@ -27,28 +27,14 @@ except pymysql.MySQLError as e:
 logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 
 
-# Responses
-def success_response(body):
-    responseObject = {}
-    responseObject['statusCode'] = 200
-    responseObject['response'] = body
-
-    return responseObject
-
-
 # Handler
 def lambda_handler(event, context):
-    # advertisers-advertiser-id-get
-    # Parse out query string params/payload body
-    id = event['queryStringParameters']['advertiser-id']
-    
-    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        query = "SELECT * FROM advertisers WHERE id = {};".format(id)
+    try:
+        cursor = conn.cursor()
+        query = "DELETE FROM publishers;"
         cursor.execute(query)
-        
-    if cursor.rowcount > 0:
-        body = cursor.fetchone()
-        return success_response(body)
-    else:
-        raise Exception('No existe el advertiser.')
+        conn.commit()
+        return 
+    except:
+        raise Exception('Error al borrar.')
     

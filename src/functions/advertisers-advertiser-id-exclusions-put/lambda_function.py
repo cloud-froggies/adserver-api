@@ -45,6 +45,7 @@ def lambda_handler(event, context):
     
     with conn.cursor() as cursor:
         query = "SELECT * FROM publisher_exclusions WHERE advertiser_id = {};".format(advertiser_id)
+
         cursor.execute(query)
         
     if cursor.rowcount > 0:
