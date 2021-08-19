@@ -105,7 +105,12 @@ resource "aws_security_group" "adserver_api_sg" {
 
 # -------------------------------- EC2 stuff----------------------------------
 data "aws_ami" "ubuntu" {
-  most_recent = true
+
+  # ami-0117d177e96a8481c
+  filter{
+    name = "image-id"
+    values = ["ami-0117d177e96a8481c"]
+  }
 
   filter {
     name   = "name"
@@ -185,5 +190,11 @@ module "api_gateway" {
 
   advertisers_post_invoke = module.lambda_functions.advertisers_post_invoke
   advertisers_post_name = module.lambda_functions.function_name_advertisers_post
+
+  publishers_get_invoke = module.lambda_functions.publishers_get_invoke
+  publishers_get_name = module.lambda_functions.function_name_publishers_get
+
+  publishers_post_invoke = module.lambda_functions.publishers_post_invoke
+  publishers_post_name = module.lambda_functions.function_name_publishers_post
   
 }
