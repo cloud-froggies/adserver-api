@@ -105,7 +105,12 @@ resource "aws_security_group" "adserver_api_sg" {
 
 # -------------------------------- EC2 stuff----------------------------------
 data "aws_ami" "ubuntu" {
-  most_recent = true
+
+  # ami-0117d177e96a8481c
+  filter{
+    name = "image-id"
+    values = ["ami-0117d177e96a8481c"]
+  }
 
   filter {
     name   = "name"
@@ -172,4 +177,29 @@ module "lambda_functions" {
 
   subnets = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id, aws_default_subnet.default_az3.id]
   security_groups  = [ aws_security_group.adserver_api_sg.id ]
+}
+
+# ------------------ api-gateway --------------------------------------------------
+
+
+module "api_gateway" {
+  source = "./modules/api-gateway"
+
+  advertisers_get_invoke = module.lambda_functions.advertisers_get_invoke
+  advertisers_get_name = module.lambda_functions.function_name_advertisers_get
+
+  advertisers_post_invoke = module.lambda_functions.advertisers_post_invoke
+  advertisers_post_name = module.lambda_functions.function_name_advertisers_post
+
+  advertisers_advertiser_id_invoke = module.lambda_functions.advertisers_advertiser_id_get_invoke
+  advertisers_advertiser_id_name = module.lambda_functions.function_name_advertisers_advertiser_id_get
+
+  publishers_get_invoke = module.lambda_functions.publishers_get_invoke
+  publishers_get_name = module.lambda_functions.function_name_publishers_get
+
+  publishers_post_invoke = module.lambda_functions.publishers_post_invoke
+  publishers_post_name = module.lambda_functions.function_name_publishers_post
+
+  advertisers_advertiser_id_campaigns_get_invoke = module.lambda_functions.advertisers_advertiser_id_campaigns_get_invoke
+  advertisers_advertiser_id_campaigns_get_name = module.lambda_functions.function_name_advertisers_advertiser_id_campaigns_get
 }

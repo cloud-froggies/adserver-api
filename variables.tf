@@ -1,4 +1,3 @@
-
 # Input variable definitions
 
 variable "aws_region" {
@@ -18,6 +17,7 @@ variable "db_endpoint"{
 
 # values for sensitive vars come from secret.tfvars
 # run: terraform apply -var-file="secret.tfvars"
+# plan: terraform plan -var-file="secret.tfvars"
 variable "db_admin_user" {
     description = "RDS instance admin username"
     
