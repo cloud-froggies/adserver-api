@@ -43,8 +43,9 @@ def lambda_handler(event, context):
     try:
         name = event['body']['name']
         category = event['body']['category']
+        advertiser_id =  event['queryStringParameters']['advertiser-id']
         cursor = conn.cursor()
-        query = "INSERT INTO advertiser_campaigns (name, category, bid, status, budget) VALUES ('{}', {}, 0, 0, -1);".format(name, category)
+        query = "INSERT INTO advertiser_campaigns (advertiser_id ,name, category, bid, status, budget) VALUES ('{}','{}', {}, 0, 0, -1);".format(advertiser_id ,name, category)
         cursor.execute(query)
         insert_id = conn.insert_id()
         conn.commit()
