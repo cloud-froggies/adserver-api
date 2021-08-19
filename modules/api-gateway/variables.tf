@@ -41,3 +41,11 @@ variable "advertisers_advertiser_id_campaigns_get_invoke" {
 variable "advertisers_advertiser_id_campaigns_get_name" {
 
 }
+
+variable "advertisers_advertiser_id_campaigns_post_invoke" {
+
+}
+
+variable "advertisers_advertiser_id_campaigns_post_name" {
+
+}

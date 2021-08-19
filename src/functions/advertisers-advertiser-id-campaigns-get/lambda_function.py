@@ -46,8 +46,8 @@ def lambda_handler(event, context):
 
         cursor.execute(query)
         
-    if cursor.rowcount > 0:
-        body = cursor.fetchall()
+    if (results:=cursor.fetchall()):
+        body = results
         return success_response(body)
     else:
         raise Exception('No existe el advertiser o no tiene campaigns.')

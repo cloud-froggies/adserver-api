@@ -202,4 +202,8 @@ module "api_gateway" {
 
   advertisers_advertiser_id_campaigns_get_invoke = module.lambda_functions.advertisers_advertiser_id_campaigns_get_invoke
   advertisers_advertiser_id_campaigns_get_name = module.lambda_functions.function_name_advertisers_advertiser_id_campaigns_get
+
+  advertisers_advertiser_id_campaigns_post_invoke = module.lambda_functions.advertisers_advertiser_id_campaigns_post_invoke
+  advertisers_advertiser_id_campaigns_post_name = module.lambda_functions.function_name_advertisers_advertiser_id_campaigns_post
+
 }

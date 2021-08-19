@@ -1,6 +1,6 @@
 #set($allParams = $input.params())
 {
-"body-json" : $input.json('$'),
+"body" : $input.json('$'),
 "queryStringParameters" : {
 #set($params = $allParams.get('path'))
 #foreach($param in $params.keySet())

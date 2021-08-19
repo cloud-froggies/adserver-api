@@ -64,3 +64,13 @@ output "function_name_advertisers_advertiser_id_campaigns_get" {
 output "advertisers_advertiser_id_campaigns_get_invoke" {
   value = aws_lambda_function.advertisers_advertiser_id_campaigns_get.invoke_arn
 }
+
+output "function_name_advertisers_advertiser_id_campaigns_post" {
+  description = "Name of the Lambda function."
+
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_post.function_name
+}
+
+output "advertisers_advertiser_id_campaigns_post_invoke" {
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_post.invoke_arn
+}

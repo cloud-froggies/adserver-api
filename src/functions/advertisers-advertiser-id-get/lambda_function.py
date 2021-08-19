@@ -46,8 +46,8 @@ def lambda_handler(event, context):
         query = "SELECT * FROM advertisers WHERE id = {};".format(id)
         cursor.execute(query)
         
-    if cursor.rowcount > 0:
-        body = cursor.fetchone()
+    if (results:=cursor.fetchone()):
+        body = results
         return success_response(body)
     else:
         raise Exception('No existe el advertiser.')
