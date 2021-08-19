@@ -1,3 +1,7 @@
+PyMySQL-1.0.2.dist-info
+pymysql
+
+
 *.zip
 # Local .terraform directories
 secret.tfvars

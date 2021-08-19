@@ -33,7 +33,7 @@ def success_response(body):
     responseObject['statusCode'] = 200
     responseObject['headers'] = {}
     responseObject['headers']['Content-Type'] = 'application/json'
-    responseObject['body'] = json.dumps(body)
+    responseObject['body'] = body
 
     return responseObject
 
@@ -44,12 +44,11 @@ def lambda_handler(event, context):
     id = event['queryStringParameters']['advertiser-id']
     
     with conn.cursor() as cursor:
-        query = "SELECT * FROM advertisers WHERE id = {};".format(id)
+        query = "SELECT * FROM advertiser_campaigns WHERE id = {};".format(id)
         cursor.execute(query)
         
     if cursor.rowcount > 0:
         body = cursor.fetchall()
         return success_response(body)
     else:
-        raise Exception('No existe el advertiser.')
-    
+        raise Exception('No existe el advertiser o no tiene campaigns.')

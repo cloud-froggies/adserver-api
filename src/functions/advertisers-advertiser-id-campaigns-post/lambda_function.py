@@ -33,23 +33,21 @@ def success_response(body):
     responseObject['statusCode'] = 200
     responseObject['headers'] = {}
     responseObject['headers']['Content-Type'] = 'application/json'
-    responseObject['body'] = json.dumps(body)
+    responseObject['body'] = body
 
     return responseObject
 
 
 # Handler
 def lambda_handler(event, context):
-    # Parse out query string params/payload body
-    id = event['queryStringParameters']['advertiser-id']
-    
-    with conn.cursor() as cursor:
-        query = "SELECT * FROM advertisers WHERE id = {};".format(id)
+    try:
+        name = event['body']['name']
+        category = event['body']['category']
+        cursor = conn.cursor()
+        query = "INSERT INTO advertiser_campaigns (name, category, bid, status, budget) VALUES ('{}', {}, 0, 0, -1);".format(name, category)
         cursor.execute(query)
-        
-    if cursor.rowcount > 0:
-        body = cursor.fetchall()
-        return success_response(body)
-    else:
-        raise Exception('No existe el advertiser.')
-    
+        insert_id = conn.insert_id()
+        conn.commit()
+        return success_response({'id': insert_id})
+    except:
+        raise Exception('Sin nombre o vacío.')
