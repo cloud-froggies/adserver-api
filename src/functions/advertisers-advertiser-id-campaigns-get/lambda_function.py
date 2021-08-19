@@ -42,7 +42,8 @@ def lambda_handler(event, context):
     id = event['queryStringParameters']['advertiser-id']
     
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        query = "SELECT id, name, category, status FROM advertiser_campaigns WHERE id = {};".format(id)
+        query = "SELECT id, name, category, status FROM advertiser_campaigns WHERE advertiser_id = {};".format(id)
+
         cursor.execute(query)
         
     if cursor.rowcount > 0:
