@@ -191,10 +191,15 @@ module "api_gateway" {
   advertisers_post_invoke = module.lambda_functions.advertisers_post_invoke
   advertisers_post_name = module.lambda_functions.function_name_advertisers_post
 
+  advertisers_advertiser_id_invoke = module.lambda_functions.advertisers_advertiser_id_get_invoke
+  advertisers_advertiser_id_name = module.lambda_functions.function_name_advertisers_advertiser_id_get
+
   publishers_get_invoke = module.lambda_functions.publishers_get_invoke
   publishers_get_name = module.lambda_functions.function_name_publishers_get
 
   publishers_post_invoke = module.lambda_functions.publishers_post_invoke
   publishers_post_name = module.lambda_functions.function_name_publishers_post
-  
+
+  advertisers_advertiser_id_campaigns_get_invoke = module.lambda_functions.advertisers_advertiser_id_campaigns_get_invoke
+  advertisers_advertiser_id_campaigns_get_name = module.lambda_functions.function_name_advertisers_advertiser_id_campaigns_get
 }

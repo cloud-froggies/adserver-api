@@ -44,3 +44,23 @@ output "function_name_publishers_post" {
 output "publishers_post_invoke" {
   value = aws_lambda_function.publishers_post.invoke_arn
 }
+
+output "function_name_advertisers_advertiser_id_get" {
+  description = "Name of the Lambda function."
+
+  value = aws_lambda_function.advertisers_id_get.function_name
+}
+
+output "advertisers_advertiser_id_get_invoke" {
+  value = aws_lambda_function.advertisers_id_get.invoke_arn
+}
+
+output "function_name_advertisers_advertiser_id_campaigns_get" {
+  description = "Name of the Lambda function."
+
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_get.function_name
+}
+
+output "advertisers_advertiser_id_campaigns_get_invoke" {
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_get.invoke_arn
+}

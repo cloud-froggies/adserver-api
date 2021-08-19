@@ -1,0 +1,11 @@
+#set($allParams = $input.params())
+{
+"body-json" : $input.json('$'),
+"queryStringParameters" : {
+#set($params = $allParams.get('path'))
+#foreach($param in $params.keySet())
+"$param": "$util.escapeJavaScript($params.get($param))"
+    #if($foreach.hasNext),#end
+#end
+}
+}
