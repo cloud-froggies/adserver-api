@@ -1,4 +1,5 @@
 # Dev commands
+```
 virtualenv venv
 
 source venv/bin/activate
@@ -13,8 +14,11 @@ chmod -R 755 $PWD
 chmod -R ugo+rwx $PWD
 ls -ls
 zipinfo advertisers-advertiser-id-get.zip
+```
 
 # Deploy commands
+```
 terraform init
 terraform plan -var-file="secret.tfvars" 
 terraform apply -var-file="secret.tfvars"
+```
