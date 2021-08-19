@@ -31,8 +31,6 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 def success_response(body):
     responseObject = {}
     responseObject['statusCode'] = 200
-    responseObject['headers'] = {}
-    responseObject['headers']['Content-Type'] = 'application/json'
     responseObject['body'] = body
 
     return responseObject
@@ -43,8 +41,8 @@ def lambda_handler(event, context):
     # Parse out query string params/payload body
     id = event['queryStringParameters']['advertiser-id']
     
-    with conn.cursor() as cursor:
-        query = "SELECT * FROM advertiser_campaigns WHERE id = {};".format(id)
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+        query = "SELECT id, name, category, status FROM advertiser_campaigns WHERE id = {};".format(id)
         cursor.execute(query)
         
     if cursor.rowcount > 0:

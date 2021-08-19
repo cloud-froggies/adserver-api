@@ -38,6 +38,7 @@ def success_response(body):
 
 # Handler
 def lambda_handler(event, context):
+    # advertisers-advertiser-id-get
     # Parse out query string params/payload body
     id = event['queryStringParameters']['advertiser-id']
     
