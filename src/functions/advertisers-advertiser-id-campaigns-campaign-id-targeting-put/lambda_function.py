@@ -38,24 +38,35 @@ def success_response(body):
 
 # Handler
 def lambda_handler(event, context):
+    # 400 bad request
+    class BadRequestException(Exception):
+        pass
+    # 404 not found
+    class NotFoundException(Exception):
+        pass
     
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
         advertiser_id = event['queryStringParameters']['advertiser-id']
         query = "SELECT * FROM advertisers WHERE id = {};".format(advertiser_id)
         cursor.execute(query)
-        
+            
     if not (results := cursor.fetchone()):
-        raise Exception('No existe el advertiser.')
-
-    # Parse out query string params/payload body
-    campaign_id = event['queryStringParameters']['campaign-id']
+        raise NotFoundException('No existe el advertiser.')
     
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        query = "SELECT * FROM ads WHERE campaign_id = {};".format(campaign_id)
+        campaign_id = event['queryStringParameters']['campaign-id']
+        query = "SELECT * FROM advertiser_campaigns WHERE id = {};".format(campaign_id)
         cursor.execute(query)
+            
+    if not (results := cursor.fetchone()):
+        raise NotFoundException('No existe el campaign.')
         
-    if (results := cursor.fetchone()):
-        body = results
-        return success_response(body)
-    else:
-        raise Exception('No existe el advertiser o no tiene campaigns.')
+    try:
+        zip_codes = event['body']['zip-codes']
+        cursor = conn.cursor()
+        query = "INSERT INTO campaign_targeting (campaign_id, zip_code) VALUES ({}, %s);".format(campaign_id)
+        cursor.executemany(query, zip_codes)
+        conn.commit()
+        return
+    except:
+        raise BadRequestException('Bad request, zip codes inválidos.')
