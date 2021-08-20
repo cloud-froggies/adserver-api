@@ -49,3 +49,19 @@ variable "advertisers_advertiser_id_campaigns_post_invoke" {
 variable "advertisers_advertiser_id_campaigns_post_name" {
 
 }
+
+variable "advertisers_delete_invoke" {
+
+}
+
+variable "advertisers_delete_name" {
+
+}
+
+variable "publishers_delete_invoke" {
+
+}
+
+variable "publishers_delete_name" {
+
+}

@@ -74,3 +74,23 @@ output "function_name_advertisers_advertiser_id_campaigns_post" {
 output "advertisers_advertiser_id_campaigns_post_invoke" {
   value = aws_lambda_function.advertisers_advertiser_id_campaigns_post.invoke_arn
 }
+
+output "function_name_advertisers_delete" {
+  description = "Name of the Lambda function."
+
+  value = aws_lambda_function.advertisers_delete.function_name
+}
+
+output "advertisers_delete_invoke" {
+  value = aws_lambda_function.advertisers_delete.invoke_arn
+}
+
+output "function_name_publishers_delete" {
+  description = "Name of the Lambda function."
+
+  value = aws_lambda_function.publishers_delete.function_name
+}
+
+output "publishers_delete_invoke" {
+  value = aws_lambda_function.publishers_delete.invoke_arn
+}

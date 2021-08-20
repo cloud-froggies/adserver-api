@@ -311,6 +311,70 @@ resource "aws_lambda_permission" "advertisers_advertiser_id_apigw" {
   source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/GET/advertisers/*"
 }
 
+# ------------------------------------------advertisers_delete-------------------------------------------------------------------------------------
+resource "aws_api_gateway_method" "advertisers_delete" {
+  authorization = "NONE"
+  http_method   = "DELETE"
+  request_models = {
+      "application/json"="Empty"
+  }
+  resource_id   = aws_api_gateway_resource.advertisers.id
+  rest_api_id   = aws_api_gateway_rest_api.adserver.id
+}
+
+resource "aws_api_gateway_integration" "advertisers_delete" {
+  http_method = aws_api_gateway_method.advertisers_delete.http_method
+  resource_id = aws_api_gateway_resource.advertisers.id
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  type        = "AWS"
+
+# #   content_handling = "CONVERT_TO_BINARY"
+#   passthrough_behavior = "NEVER"
+#   request_templates = {
+#     "application/json" = file("${path.module}/templates/advertisers_delete.template")
+#   }
+
+  integration_http_method = "POST"
+  uri         = "${var.advertisers_delete_invoke}"
+
+  depends_on = [
+    aws_lambda_permission.advertisers_delete_apigw
+  ]
+}
+resource "aws_api_gateway_method_response" "advertisers_delete_response_204" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers.id
+  http_method = aws_api_gateway_method.advertisers_delete.http_method
+  status_code = "204"
+
+  response_models = {
+    "application/json" = "Empty"
+    }
+}
+
+resource "aws_api_gateway_integration_response" "advertisers_delete_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers.id
+  http_method = aws_api_gateway_method.advertisers_delete.http_method
+  status_code = aws_api_gateway_method_response.advertisers_delete_response_204.status_code
+  
+    depends_on = [
+    aws_api_gateway_integration.advertisers_delete
+  ]
+}
+
+resource "aws_lambda_permission" "advertisers_delete_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.advertisers_delete_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/DELETE/advertisers"
+}
+
+
 # -----------------------------------------{advertiser-id}/campaigns -----------------------------------------------------------------------------------
 
 resource "aws_api_gateway_resource" "advertisers_advertiser_id_campaigns" {
@@ -733,6 +797,69 @@ resource "aws_lambda_permission" "publishers_post_apigw" {
   source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/POST/publishers"
 }
 
+# ------------------------------------------publishers_DELETE-------------------------------------------------------------------------------------
+resource "aws_api_gateway_method" "publishers_delete" {
+  authorization = "NONE"
+  http_method   = "DELETE"
+  request_models = {
+      "application/json"="Empty"
+  }
+  resource_id   = aws_api_gateway_resource.publishers.id
+  rest_api_id   = aws_api_gateway_rest_api.adserver.id
+}
+
+resource "aws_api_gateway_integration" "publishers_delete" {
+  http_method = aws_api_gateway_method.publishers_delete.http_method
+  resource_id = aws_api_gateway_resource.publishers.id
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  type        = "AWS"
+
+# #   content_handling = "CONVERT_TO_BINARY"
+#   passthrough_behavior = "NEVER"
+#   request_templates = {
+#     "application/json" = file("${path.module}/templates/publishers_delete.template")
+#   }
+
+  integration_http_method = "POST"
+  uri         = "${var.publishers_delete_invoke}"
+
+  depends_on = [
+    aws_lambda_permission.publishers_delete_apigw
+  ]
+}
+resource "aws_api_gateway_method_response" "publishers_delete_response_204" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers.id
+  http_method = aws_api_gateway_method.publishers_delete.http_method
+  status_code = "204"
+
+  response_models = {
+    "application/json" = "Empty"
+    }
+}
+
+resource "aws_api_gateway_integration_response" "publishers_delete_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers.id
+  http_method = aws_api_gateway_method.publishers_delete.http_method
+  status_code = aws_api_gateway_method_response.publishers_delete_response_204.status_code
+  
+    depends_on = [
+    aws_api_gateway_integration.publishers_delete
+  ]
+}
+
+resource "aws_lambda_permission" "publishers_delete_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.publishers_delete_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/DELETE/publishers"
+}
+
 
 
 
@@ -761,7 +888,12 @@ resource "aws_api_gateway_deployment" "adserver" {
       aws_api_gateway_method.advertisers_advertiser_id_campaigns_get,
       aws_api_gateway_integration.advertisers_advertiser_id_campaigns_get,
       aws_api_gateway_method.advertisers_advertiser_id_campaigns_post,
-      aws_api_gateway_integration.advertisers_advertiser_id_campaigns_post
+      aws_api_gateway_integration.advertisers_advertiser_id_campaigns_post,
+      aws_api_gateway_method.advertisers_delete,
+      aws_api_gateway_integration.advertisers_delete,
+      aws_api_gateway_method.publishers_delete,
+      aws_api_gateway_integration.publishers_delete
+
     ]))
   }
 

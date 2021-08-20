@@ -206,7 +206,9 @@ module "api_gateway" {
   advertisers_advertiser_id_campaigns_post_invoke = module.lambda_functions.advertisers_advertiser_id_campaigns_post_invoke
   advertisers_advertiser_id_campaigns_post_name = module.lambda_functions.function_name_advertisers_advertiser_id_campaigns_post
 
-  
+  advertisers_delete_invoke = module.lambda_functions.advertisers_delete_invoke
+  advertisers_delete_name= module.lambda_functions.function_name_advertisers_delete
 
-
+  publishers_delete_invoke = module.lambda_functions.publishers_delete_invoke
+  publishers_delete_name = module.lambda_functions.function_name_publishers_delete
 }
