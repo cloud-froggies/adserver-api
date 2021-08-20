@@ -35,9 +35,23 @@ def success_response(body):
 
     return responseObject
 
-
-
-
+def check_params(body):
+    acceptable_params = {
+        "bid": lambda x: type(x)== float or type(x) ==int,
+        "budget":lambda x: type(x)== float or type(x) ==int,
+        "status":lambda x: type(x)== bool or type(x) ==int
+        
+    }
+    if not (body):
+        raise Exception("Sin argumentos de body validos")
+    for key,value in body.items():
+        if key not in acceptable_params:
+            raise Exception("Sin argumentos de body validos")
+        
+        if not (acceptable_params[key](value)):
+            raise Exception(f"Sin {key} o invalido")
+            
+        
 # Handler
 def lambda_handler(event, context):
     # Connection
@@ -50,30 +64,34 @@ def lambda_handler(event, context):
 
     logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 
-    # 400 bad request
-    class BadRequestException(Exception):
-        pass
-    # 404 not found
-    class NotFoundException(Exception):
-        pass
-
+    
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
         advertiser_id = event['queryStringParameters']['advertiser-id']
         query = "SELECT * FROM advertisers WHERE id = {};".format(advertiser_id)
         cursor.execute(query)
-        
+            
     if not (results := cursor.fetchone()):
-        raise NotFoundException('No existe el advertiser.')
+        raise Exception('No existe el advertiser o campaign.')
 
-    try:
-        name = event['body']['name']
-        category = event['body']['category']
-        advertiser_id =  event['queryStringParameters']['advertiser-id']
-        cursor = conn.cursor()
-        query = "INSERT INTO advertiser_campaigns (advertiser_id ,name, category, bid, status, budget) VALUES ({},'{}', {}, 0, 0, -1);".format(advertiser_id ,name, category)
+    # Parse out query string params/payload body
+    campaign_id = event['queryStringParameters']['campaign-id']
+    
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+        query = "SELECT * FROM advertiser_campaigns WHERE id = {} AND advertiser_id = {};".format(campaign_id,advertiser_id)
         cursor.execute(query)
-        insert_id = conn.insert_id()
-        conn.commit()
-        return success_response({'id': insert_id})
-    except:
-        raise BadRequestException('Sin nombre o vacío.')
+    
+    if not (results := cursor.fetchone()):
+        raise Exception('No existe el advertiser o campaign.')
+
+    body_params = event["body"]
+    
+    check_params(body_params)
+
+    params_into_str = map(lambda x: f'{x[0]} = {x[1]}',body_params.items())
+
+    cursor = conn.cursor()
+    query = "UPDATE advertiser_campaigns SET {} WHERE id = {};".format(', '.join(params_into_str),campaign_id)
+    print(query)
+    cursor.execute(query)
+    conn.commit()
+    return

@@ -101,3 +101,13 @@ variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_get_name"{}
 
 variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_invoke"{}
 variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_name"{}
+
+
+variable "advertisers_advertiser_id_campaigns_campaign_id_patch_invoke"{}
+
+variable "advertisers_advertiser_id_campaigns_campaign_id_patch_name"{}
+
+
+variable "lambda_advertisers_advertiser_id_exclusions_get_name"{}
+
+variable "lambda_advertisers_advertiser_id_exclusions_get_invoke"{}

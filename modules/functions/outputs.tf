@@ -156,3 +156,24 @@ output "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_invoke"{
 output "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_name"{
   value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_targeting_put.function_name
 }
+
+
+output "advertisers_advertiser_id_campaigns_campaign_id_patch_invoke"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_patch.invoke_arn
+
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_patch_name"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_patch.function_name
+
+}
+
+
+
+output "lambda_advertisers_advertiser_id_exclusions_get_name"{
+  value = aws_lambda_function.lambda_advertisers_advertiser_id_exclusions_get.function_name
+}
+
+output "lambda_advertisers_advertiser_id_exclusions_get_invoke"{
+  value = aws_lambda_function.lambda_advertisers_advertiser_id_exclusions_get.invoke_arn
+}

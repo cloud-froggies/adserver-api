@@ -61,7 +61,7 @@ def lambda_handler(event, context):
     campaign_id = event['queryStringParameters']['campaign-id']
     
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        query = "SELECT id, name, category, status, bid, budget FROM advertiser_campaigns WHERE id = {};".format(campaign_id)
+        query = "SELECT id, name, category, status, bid, budget FROM advertiser_campaigns WHERE id = {} AND advertiser_id = {};".format(campaign_id,advertiser_id)
         cursor.execute(query)
         
     if (results := cursor.fetchone()):

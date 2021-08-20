@@ -54,7 +54,7 @@ def lambda_handler(event, context):
         query = "SELECT * FROM publisher_exclusions WHERE advertiser_id = {};".format(advertiser_id)
         cursor.execute(query)
         
-    if (results := cursor.fetchone()):
+    if (results := cursor.fetchall()):
         body = results
         return success_response(body)
     else:
