@@ -89,3 +89,15 @@ variable "advertisers_advertiser_id_campaigns_campaign_id_ads_post_name"{}
 variable "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_invoke"{}
 
 variable "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_name"{}
+
+
+variable "advertisers_advertiser_id_campaigns_campaign_id_get_invoke"{}
+variable "advertisers_advertiser_id_campaigns_campaign_id_get_name"{}
+
+
+variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_get_invoke"{}
+variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_get_name"{}
+
+
+variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_invoke"{}
+variable "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_name"{}

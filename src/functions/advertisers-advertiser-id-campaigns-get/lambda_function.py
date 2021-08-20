@@ -38,6 +38,15 @@ def success_response(body):
 
 # Handler
 def lambda_handler(event, context):
+    # Connection
+    try:
+        conn = pymysql.connect(host=endpoint, user=username, passwd=password, db=db_name, connect_timeout=5)
+    except pymysql.MySQLError as e:
+        logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
+        logger.error(e)
+        sys.exit()
+
+    logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
     # Parse out query string params/payload body
     id = event['queryStringParameters']['advertiser-id']
     

@@ -132,3 +132,27 @@ output "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_invoke"{
 output "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_name"{
   value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.function_name
 }
+
+output "advertisers_advertiser_id_campaigns_campaign_id_get_invoke"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_get.invoke_arn
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_get_name"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_get.function_name
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_targeting_get_invoke"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_targeting_get.invoke_arn
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_targeting_get_name"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_targeting_get.function_name
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_invoke"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_targeting_put.invoke_arn
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_name"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_targeting_put.function_name
+}
