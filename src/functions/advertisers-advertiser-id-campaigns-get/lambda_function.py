@@ -31,7 +31,7 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 def success_response(body):
     responseObject = {}
     responseObject['statusCode'] = 200
-    responseObject['body'] = body
+    responseObject['response'] = body
 
     return responseObject
 

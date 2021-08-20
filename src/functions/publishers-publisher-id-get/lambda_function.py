@@ -31,8 +31,6 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 def success_response(body):
     responseObject = {}
     responseObject['statusCode'] = 200
-    responseObject['headers'] = {}
-    responseObject['headers']['Content-Type'] = 'application/json'
     responseObject['body'] = body
 
     return responseObject
@@ -40,15 +38,16 @@ def success_response(body):
 
 # Handler
 def lambda_handler(event, context):
+    # publishers-publisher-id-get
     # Parse out query string params/payload body
     id = event['queryStringParameters']['publisher-id']
     
-    with conn.cursor() as cursor:
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
         query = "SELECT * FROM publishers WHERE id = {};".format(id)
         cursor.execute(query)
-        
-    if cursor.rowcount > 0:
-        body = cursor.fetchall()
+    
+    if (results := cursor.fetchone()):
+        body = results
         return success_response(body)
     else:
         raise Exception('No existe el publisher.')
