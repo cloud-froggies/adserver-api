@@ -177,3 +177,11 @@ output "lambda_advertisers_advertiser_id_exclusions_get_name"{
 output "lambda_advertisers_advertiser_id_exclusions_get_invoke"{
   value = aws_lambda_function.lambda_advertisers_advertiser_id_exclusions_get.invoke_arn
 }
+
+output "lambda_advertisers_advertiser_id_exclusions_put_invoke"{
+  value = aws_lambda_function.lambda_advertisers_advertiser_id_exclusions_put.invoke_arn
+}
+
+output "lambda_advertisers_advertiser_id_exclusions_put_name"{
+  value = aws_lambda_function.lambda_advertisers_advertiser_id_exclusions_put.function_name
+}

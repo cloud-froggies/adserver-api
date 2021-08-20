@@ -238,4 +238,7 @@ module "api_gateway" {
 
   lambda_advertisers_advertiser_id_exclusions_get_name = module.lambda_functions.lambda_advertisers_advertiser_id_exclusions_get_name
   lambda_advertisers_advertiser_id_exclusions_get_invoke = module.lambda_functions.lambda_advertisers_advertiser_id_exclusions_get_invoke
+
+  lambda_advertisers_advertiser_id_exclusions_put_invoke = module.lambda_functions.lambda_advertisers_advertiser_id_exclusions_put_invoke 
+  lambda_advertisers_advertiser_id_exclusions_put_name = module.lambda_functions.lambda_advertisers_advertiser_id_exclusions_put_name 
 }

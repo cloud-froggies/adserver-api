@@ -47,16 +47,42 @@ def lambda_handler(event, context):
         sys.exit()
 
     logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
-    # Parse out query string params/payload body
-    advertiser_id = event['queryStringParameters']['advertiser-id']
-    
-    with conn.cursor() as cursor:
-        query = "SELECT * FROM publisher_exclusions WHERE advertiser_id = {};".format(advertiser_id)
 
+
+    # 400 bad request
+    class BadRequestException(Exception):
+        pass
+    # 404 not found
+    class NotFoundException(Exception):
+        pass
+    
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+        advertiser_id = event['queryStringParameters']['advertiser-id']
+        query = "SELECT * FROM advertisers WHERE id = {};".format(advertiser_id)
         cursor.execute(query)
+            
+    if not (results := cursor.fetchone()):
+        raise NotFoundException('No existe el advertiser.')
+            
+    try:
+        publishers = event['body']['publishers']
+        if not (publishers):
+            raise Exception('No existe el publisher.')
         
-    if (results := cursor.fetchone()):
-        body = results
-        return success_response(body)
-    else:
-        raise Exception('El advertiser no existe o no tiene exclusiones.')
+        for publisher in publishers:
+            with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+                query = "SELECT * FROM publishers WHERE id = {};".format(publisher)
+                cursor.execute(query)
+            
+            if (cursor.fetchone()):
+                pass
+            else:
+                raise Exception('No existe el publisher.')
+
+        cursor = conn.cursor()
+        query = "INSERT INTO publisher_exclusions (advertiser_id, publisher_id) VALUES ({}, %s);".format(advertiser_id)
+        cursor.executemany(query, publishers)
+        conn.commit()
+        return
+    except:
+        raise BadRequestException('Alguno de los publishers no existe.')
