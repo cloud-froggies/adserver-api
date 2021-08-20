@@ -3,7 +3,6 @@ resource "aws_api_gateway_rest_api" "adserver" {
 #   binary_media_types = ["*/*"]
 }
 
-
 # ------------------------------------------Advertisers---------------------------------------------------------------------------------------
 resource "aws_api_gateway_resource" "advertisers" {
   parent_id   = aws_api_gateway_rest_api.adserver.root_resource_id
@@ -382,7 +381,7 @@ resource "aws_api_gateway_resource" "advertisers_advertiser_id_campaigns" {
   path_part   = "campaigns"
   rest_api_id = aws_api_gateway_rest_api.adserver.id
 }
-# ------------------------------------------- advertiser-id-get -------------------------------------------------------------------------------
+# ------------------------------------------- advertiser-id-campaigns-get -------------------------------------------------------------------------------
 
 resource "aws_api_gateway_method" "advertisers_advertiser_id_campaigns_get" {
   authorization = "NONE"
@@ -453,7 +452,7 @@ resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campa
   http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_get.http_method
   status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_get_response_404.status_code
 
-  selection_pattern = ".*No existe el advertiser o no tiene campaigns.*"
+  selection_pattern = ".*No existe el advertiser.*"
 
     depends_on = [
     aws_api_gateway_integration.advertisers_advertiser_id_campaigns_get
@@ -473,7 +472,7 @@ resource "aws_lambda_permission" "advertisers_advertiser_id_campaigns_get_apigw"
 }
 
 
-# ------------------------------------------- advertiser-id-post -------------------------------------------------------------------------------
+# ------------------------------------------- advertiser-id-campaigns-post -------------------------------------------------------------------------------
 
 resource "aws_api_gateway_method" "advertisers_advertiser_id_campaigns_post" {
   authorization = "NONE"
@@ -588,6 +587,327 @@ resource "aws_lambda_permission" "advertisers_advertiser_id_campaigns_post_apigw
   # within the API Gateway "REST API".
   source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/POST/advertisers/*/campaigns"
 }
+# -----------------------------------------{advertiser-id}/campaigns/{campaign-id} -----------------------------------------------------------------------------------
+
+resource "aws_api_gateway_resource" "advertisers_advertiser_id_campaigns_campaign_id" {
+  parent_id   = aws_api_gateway_resource.advertisers_advertiser_id_campaigns.id
+  path_part   = "{campaign-id}"
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+}
+
+# -----------------------------------------{advertiser-id}/campaigns/{campaign-id}/ads -----------------------------------------------------------------------------------
+
+resource "aws_api_gateway_resource" "advertisers_advertiser_id_campaigns_campaign_id_ads" {
+  parent_id   = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id.id
+  path_part   = "ads"
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+}
+
+# ------------------------------------------- {advertiser-id}/campaigns/{campaign-id}/ads GET -------------------------------------------------------------------------------
+
+resource "aws_api_gateway_method" "advertisers_advertiser_id_campaigns_campaign_id_ads_get" {
+  authorization = "NONE"
+  http_method   = "GET"
+  resource_id   = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  rest_api_id   = aws_api_gateway_rest_api.adserver.id
+}
+
+resource "aws_api_gateway_integration" "advertisers_advertiser_id_campaigns_campaign_id_ads_get" {
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_get.http_method
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  type        = "AWS"
+  
+  passthrough_behavior = "NEVER"
+  request_templates = {
+    "application/json" = file("${path.module}/templates/advertisers_advertiser_id_get.template")
+  }
+  integration_http_method = "POST"
+  uri         = "${var.advertisers_advertiser_id_campaigns_campaign_id_ads_get_invoke}"
+
+  depends_on = [
+    aws_lambda_permission.advertisers_advertiser_id_campaigns_campaign_id_ads_apigw
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_get_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_get.http_method
+  status_code = "200"
+  
+  response_models = {
+    "application/json" = "Empty"
+    }
+}
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_get_integration_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_get.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_get_response_200.status_code
+  
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_get
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_get_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_get.http_method
+  status_code = "404"
+
+  response_models = {
+    "application/json" = "Error"
+    }
+  
+  depends_on = [
+    aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_get_response_200
+  ]
+}
+
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_get_integration_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_get.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_get_response_404.status_code
+
+  selection_pattern = ".*No existe el advertiser.*"
+
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_get
+  ]
+}
+
+
+resource "aws_lambda_permission" "advertisers_advertiser_id_campaigns_campaign_id_ads_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.advertisers_advertiser_id_campaigns_campaign_id_ads_get_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/GET/advertisers/*/campaigns/*/ads"
+}
+
+# ------------------------------------------- {advertiser-id}/campaigns/{campaign-id}/ads POST -------------------------------------------------------------------------------
+
+resource "aws_api_gateway_method" "advertisers_advertiser_id_campaigns_campaign_id_ads_post" {
+  authorization = "NONE"
+  http_method   = "POST"
+  resource_id   = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  rest_api_id   = aws_api_gateway_rest_api.adserver.id
+}
+
+resource "aws_api_gateway_integration" "advertisers_advertiser_id_campaigns_campaign_id_ads_post" {
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  type        = "AWS"
+  
+  passthrough_behavior = "NEVER"
+  request_templates = {
+    "application/json" = file("${path.module}/templates/advertisers_advertiser_id_get.template")
+  }
+  integration_http_method = "POST"
+  uri         = "${var.advertisers_advertiser_id_campaigns_campaign_id_ads_post_invoke}"
+
+  depends_on = [
+    aws_lambda_permission.advertisers_advertiser_id_campaigns_campaign_id_ads_post_apigw
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  status_code = "200"
+  
+  response_models = {
+    "application/json" = "Empty"
+    }
+}
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_integration_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_200.status_code
+  
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_post
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_400" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  status_code = "400"
+
+  response_models = {
+    "application/json" = "Error"
+    }
+  
+  depends_on = [
+    aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_200
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  status_code = "404"
+
+  response_models = {
+    "application/json" = "Error"
+    }
+  
+  depends_on = [
+    aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_400
+  ]
+}
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_integration_response_400" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_400.status_code
+
+  selection_pattern = ".*Sin headline, description o url, o vacíos.*"
+
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_post
+  ]
+}
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_integration_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_post.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_post_response_404.status_code
+
+  selection_pattern = ".*No existe.*"
+
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_post
+  ]
+}
+
+resource "aws_lambda_permission" "advertisers_advertiser_id_campaigns_campaign_id_ads_post_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.advertisers_advertiser_id_campaigns_campaign_id_ads_post_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/POST/advertisers/*/campaigns/*/ads"
+}
+
+
+# -----------------------------------------{advertiser-id}/campaigns/{campaign-id}/ads/{ad-id} -----------------------------------------------------------------------------------
+
+resource "aws_api_gateway_resource" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id" {
+  parent_id   = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads.id
+  path_part   = "{ad-id}"
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+}
+
+# ------------------------------------------- {advertiser-id}/campaigns/{campaign-id}/ads/{ad-id} GET -------------------------------------------------------------------------------
+
+resource "aws_api_gateway_method" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get" {
+  authorization = "NONE"
+  http_method   = "GET"
+  resource_id   = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id.id
+  rest_api_id   = aws_api_gateway_rest_api.adserver.id
+}
+
+resource "aws_api_gateway_integration" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get" {
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.http_method
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id.id
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  type        = "AWS"
+  
+  passthrough_behavior = "NEVER"
+  request_templates = {
+    "application/json" = file("${path.module}/templates/advertisers_advertiser_id_get.template")
+  }
+  integration_http_method = "POST"
+  uri         = "${var.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_invoke}"
+
+  depends_on = [
+    aws_lambda_permission.advertisers_advertiser_id_campaigns_campaign_id_ads_apigw
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.http_method
+  status_code = "200"
+  
+  response_models = {
+    "application/json" = "Empty"
+    }
+}
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_integration_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_response_200.status_code
+  
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get
+  ]
+}
+
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.http_method
+  status_code = "404"
+
+  response_models = {
+    "application/json" = "Error"
+    }
+  
+  depends_on = [
+    aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_response_200
+  ]
+}
+
+
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_integration_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id.id
+  http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.http_method
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_response_404.status_code
+
+  selection_pattern = ".*No existe.*"
+
+    depends_on = [
+    aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get
+  ]
+}
+
+
+resource "aws_lambda_permission" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/GET/advertisers/*/campaigns/*/ads/*"
+}
+
 # ------------------------------------------Publishers---------------------------------------------------------------------------------------
 resource "aws_api_gateway_resource" "publishers" {
   parent_id   = aws_api_gateway_rest_api.adserver.root_resource_id
@@ -860,8 +1180,127 @@ resource "aws_lambda_permission" "publishers_delete_apigw" {
   source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/DELETE/publishers"
 }
 
+# ------------------------------------------publishers/{publisher-id}---------------------------------------------------------------------------------------
+resource "aws_api_gateway_resource" "publishers_publisher_id" {
+  parent_id   = aws_api_gateway_resource.publishers.id
+  path_part   = "{publisher-id}"
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+}
 
+# ------------------------------------------publishers/{publisher-id} GET-------------------------------------------------------------------------------------
+resource "aws_api_gateway_method" "publishers_publisher_id_get" {
+  authorization = "NONE"
+  http_method   = "GET"
+  resource_id   = aws_api_gateway_resource.publishers_publisher_id.id
+  rest_api_id   = aws_api_gateway_rest_api.adserver.id
+}
 
+resource "aws_api_gateway_integration" "publishers_publisher_id_get" {
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  type        = "AWS"
+
+  passthrough_behavior = "NEVER"
+  request_templates = {
+    "application/json" = file("${path.module}/templates/advertisers_advertiser_id_get.template")
+  }
+
+  integration_http_method = "POST"
+  uri         = "${var.publishers_publisher_id_get_invoke}"
+
+  depends_on = [
+    aws_lambda_permission.publishers_publisher_id_get_apigw
+  ]
+}
+resource "aws_api_gateway_method_response" "publishers_publisher_id_get_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  status_code = "200"
+  
+  response_models = {
+    "application/json" = "Empty"
+    }
+}
+
+resource "aws_api_gateway_integration_response" "publishers_publisher_id_get_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  status_code = aws_api_gateway_method_response.publishers_publisher_id_get_response_200.status_code
+
+    depends_on = [
+    aws_api_gateway_integration.publishers_publisher_id_get
+  ]
+}
+
+resource "aws_api_gateway_method_response" "publishers_publisher_id_get_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  status_code = "404"
+
+  response_models = {
+    "application/json" = "Error"
+    }
+  
+  depends_on = [
+    aws_api_gateway_method_response.publishers_publisher_id_get_response_200
+  ]
+}
+
+resource "aws_api_gateway_integration_response" "publishers_publisher_id_get_integration_response_404" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  status_code = aws_api_gateway_method_response.publishers_publisher_id_get_response_404.status_code
+
+  selection_pattern = ".*No existe el publisher.*"
+
+    depends_on = [
+    aws_api_gateway_integration.publishers_publisher_id_get
+  ]
+}
+
+resource "aws_api_gateway_method_response" "publishers_publisher_id_get_response_400" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  status_code = "400"
+
+  response_models = {
+    "application/json" = "Error"
+    }
+  
+  depends_on = [
+    aws_api_gateway_method_response.publishers_publisher_id_get_response_404
+  ]
+}
+
+resource "aws_api_gateway_integration_response" "publishers_publisher_id_get_integration_response_400" {
+  rest_api_id = aws_api_gateway_rest_api.adserver.id
+  resource_id = aws_api_gateway_resource.publishers_publisher_id.id
+  http_method = aws_api_gateway_method.publishers_publisher_id_get.http_method
+  status_code = aws_api_gateway_method_response.publishers_publisher_id_get_response_400.status_code
+
+  selection_pattern = ".*Sin commission o invalida.*"
+
+    depends_on = [
+    aws_api_gateway_integration.publishers_publisher_id_get
+  ]
+}
+
+resource "aws_lambda_permission" "publishers_publisher_id_get_apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.publishers_publisher_id_get_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the API Gateway "REST API".
+  source_arn = "${aws_api_gateway_rest_api.adserver.execution_arn}/*/GET/publishers/*"
+}
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------
 resource "aws_api_gateway_deployment" "adserver" {

@@ -47,6 +47,9 @@ def lambda_handler(event, context):
         cursor.execute(query)
     
     if (results := cursor.fetchone()):
+        if(results["commission"]<=0):
+            raise Exception("Sin commission o invalida.")
+            
         body = results
         return success_response(body)
     else:

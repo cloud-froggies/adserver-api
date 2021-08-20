@@ -94,3 +94,41 @@ output "function_name_publishers_delete" {
 output "publishers_delete_invoke" {
   value = aws_lambda_function.publishers_delete.invoke_arn
 }
+
+output "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get_invoke" {
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_get.invoke_arn
+}
+
+output "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get_name" {
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_get.function_name
+}
+
+
+output "publishers_publisher_id_get_invoke"{
+  value = aws_lambda_function.publishers_publisher_id_get.invoke_arn
+
+}
+
+output "publishers_publisher_id_get_name" {
+  value = aws_lambda_function.publishers_publisher_id_get.function_name
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_ads_post_invoke"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_post.invoke_arn
+
+
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_ads_post_name"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_post.function_name
+
+}
+
+
+output "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_invoke"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.invoke_arn
+}
+
+output "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get_name"{
+  value = aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.function_name
+}
