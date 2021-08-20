@@ -258,6 +258,163 @@ resource "aws_cloudwatch_log_group" "advertisers_advertiser_id_campaigns_post" {
   retention_in_days = 30
 }
 
+#---------------------------------------------------------------advertisers-advertiser-id-campaigns-campaign-id-get-------------------------------
+
+
+#---------------------------------------------------------------advertisers-advertiser-id-campaigns-campaign-id-ads-get--------------------------------
+data "archive_file" "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get" {
+  type = "zip"
+
+  source_dir  = "${path.root}/src/functions/advertisers-advertiser-id-campaigns-campaign-id-ads-get"
+  output_path = "${path.root}/src/functions/advertisers-advertiser-id-campaigns-campaign-id-ads-get.zip"
+}
+
+resource "aws_s3_bucket_object" "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "advertisers-advertiser-id-campaigns-campaign-id-ads-get.zip"
+  source = data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get.output_path
+
+  etag = filemd5(data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get.output_path)
+}
+
+resource "aws_lambda_function" "advertisers_advertiser_id_campaigns_campaign_id_ads_get" {
+  function_name = "advertisers-advertiser-id-campaigns-campaign-id-ads-get"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get.key
+
+  runtime = "python3.8"
+  handler = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_get.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = var.subnets
+    security_group_ids = var.security_groups
+  }
+
+  environment {
+    variables = {
+      db_endpoint = var.db_address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "advertisers_advertiser_id_campaigns_campaign_id_ads_get" {
+  name = "/aws/lambda/${aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_get.function_name}"
+
+  retention_in_days = 30
+}
+#---------------------------------------------------------------advertisers-advertiser-id-campaigns-campaign-id-ads-post--------------------------------
+
+
+data "archive_file" "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_post" {
+  type = "zip"
+
+  source_dir  = "${path.root}/src/functions/advertisers-advertiser-id-campaigns-campaign-id-ads-post"
+  output_path = "${path.root}/src/functions/advertisers-advertiser-id-campaigns-campaign-id-ads-post.zip"
+}
+
+resource "aws_s3_bucket_object" "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_post" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "advertisers-advertiser-id-campaigns-campaign-id-ads-post.zip"
+  source = data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_post.output_path
+
+  etag = filemd5(data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_post.output_path)
+}
+
+resource "aws_lambda_function" "advertisers_advertiser_id_campaigns_campaign_id_ads_post" {
+  function_name = "advertisers-advertiser-id-campaigns-campaign-id-ads-post"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_post.key
+
+  runtime = "python3.8"
+  handler = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_post.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = var.subnets
+    security_group_ids = var.security_groups
+  }
+
+  environment {
+    variables = {
+      db_endpoint = var.db_address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "advertisers_advertiser_id_campaigns_campaign_id_ads_post" {
+  name = "/aws/lambda/${aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_post.function_name}"
+
+  retention_in_days = 30
+}
+
+#---------------------------------------------------------------advertisers-advertiser-id-campaigns-campaign-id-ads-ad-id-get--------------------------------
+
+
+data "archive_file" "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get" {
+  type = "zip"
+
+  source_dir  = "${path.root}/src/functions/advertisers-advertiser-id-campaigns-campaign-id-ads-ad-id-get"
+  output_path = "${path.root}/src/functions/advertisers-advertiser-id-campaigns-campaign-id-ads-ad-id-get.zip"
+}
+
+resource "aws_s3_bucket_object" "lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "advertisers-advertiser-id-campaigns-campaign-id-ads-ad-id-get.zip"
+  source = data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.output_path
+
+  etag = filemd5(data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.output_path)
+}
+
+resource "aws_lambda_function" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get" {
+  function_name = "advertisers-advertiser-id-campaigns-campaign-id-ads-ad-id-get"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.key
+
+  runtime = "python3.8"
+  handler = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.lambda_advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = var.subnets
+    security_group_ids = var.security_groups
+  }
+
+  environment {
+    variables = {
+      db_endpoint = var.db_address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get" {
+  name = "/aws/lambda/${aws_lambda_function.advertisers_advertiser_id_campaigns_campaign_id_ads_ad_id_get.function_name}"
+
+  retention_in_days = 30
+}
+
+
 # ------------------------------------------------------------- advertisers-advertiser-id-exclusions-get ----------------------------------------------
 data "archive_file" "lambda_advertisers_advertiser_id_exclusions_get" {
   type = "zip"
@@ -365,6 +522,58 @@ resource "aws_cloudwatch_log_group" "publishers_get" {
 
   retention_in_days = 30
 }
+
+#------------------------------------------------------------ publishers_publisher_id_get ------------------------------------------------
+
+data "archive_file" "lambda_publishers_publisher_id_get" {
+  type = "zip"
+
+  source_dir  = "${path.root}/src/functions/publishers-publisher-id-get"
+  output_path = "${path.root}/src/functions/publishers-publisher-id-get.zip"
+}
+
+resource "aws_s3_bucket_object" "lambda_publishers_publisher_id_get" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "publishers-publisher-id-get.zip"
+  source = data.archive_file.lambda_publishers_publisher_id_get.output_path
+
+  etag = filemd5(data.archive_file.lambda_publishers_publisher_id_get.output_path)
+}
+
+resource "aws_lambda_function" "publishers_publisher_id_get" {
+  function_name = "publishers-publisher-id-get"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.lambda_publishers_publisher_id_get.key
+
+  runtime = "python3.8"
+  handler = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.lambda_publishers_publisher_id_get.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = var.subnets
+    security_group_ids = var.security_groups
+  }
+
+  environment {
+    variables = {
+      db_endpoint = var.db_address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "publishers_publisher_id_get" {
+  name = "/aws/lambda/${aws_lambda_function.publishers_publisher_id_get.function_name}"
+
+  retention_in_days = 30
+}
+
 #------------------------------------------------------------- publishers_post -----------------------------------------------
 
 data "archive_file" "lambda_publishers_post" {

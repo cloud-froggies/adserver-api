@@ -537,11 +537,11 @@ resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_
   ]
 }
 
-resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_post_response_500" {
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_post_response_404" {
   rest_api_id = aws_api_gateway_rest_api.adserver.id
   resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns.id
   http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_post.http_method
-  status_code = "500"
+  status_code = "404"
 
   response_models = {
     "application/json" = "Error"
@@ -565,13 +565,13 @@ resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campa
   ]
 }
 
-resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_post_integration_response_500" {
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_post_integration_response_404" {
   rest_api_id = aws_api_gateway_rest_api.adserver.id
   resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns.id
   http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_post.http_method
-  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_post_response_500.status_code
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_post_response_404.status_code
 
-  selection_pattern = ".*MySQL.*"
+  selection_pattern = ".*No existe el advertiser.*"
 
     depends_on = [
     aws_api_gateway_integration.advertisers_advertiser_id_campaigns_post

@@ -38,11 +38,20 @@ def success_response(body):
 
 # Handler
 def lambda_handler(event, context):
+    
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+        campaign_id = event['queryStringParameters']['campaign-id']
+        query = "SELECT * FROM advertiser_campaigns WHERE id = {};".format(campaign_id)
+        cursor.execute(query)
+            
+    if not (results := cursor.fetchone()):
+        raise Exception('No existe el advertiser o no tiene campaigns.')
+
     # Parse out query string params/payload body
     campaign_id = event['queryStringParameters']['campaign-id']
     
     with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        query = "SELECT * FROM ads WHERE campaign_id = {};".format(id)
+        query = "SELECT * FROM ads WHERE campaign_id = {};".format(campaign_id)
         cursor.execute(query)
         
     if cursor.rowcount > 0:

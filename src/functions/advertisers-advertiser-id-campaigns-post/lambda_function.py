@@ -36,20 +36,7 @@ def success_response(body):
     return responseObject
 
 
-# Handler
-def lambda_handler(event, context):
-    try:
-        name = event['body']['name']
-        category = event['body']['category']
-        advertiser_id =  event['queryStringParameters']['advertiser-id']
-        cursor = conn.cursor()
-        query = "INSERT INTO advertiser_campaigns (advertiser_id ,name, category, bid, status, budget) VALUES ('{}','{}', {}, 0, 0, -1);".format(advertiser_id ,name, category)
-        cursor.execute(query)
-        insert_id = conn.insert_id()
-        conn.commit()
-        return success_response({'id': insert_id})
-    except:
-        raise Exception('Sin nombre o vacío.')
+
 
 # Handler
 def lambda_handler(event, context):
@@ -71,9 +58,9 @@ def lambda_handler(event, context):
     try:
         name = event['body']['name']
         category = event['body']['category']
-        
+        advertiser_id =  event['queryStringParameters']['advertiser-id']
         cursor = conn.cursor()
-        query = "INSERT INTO advertiser_campaigns (name, category) VALUES ('{}', {});".format(name, category)
+        query = "INSERT INTO advertiser_campaigns (advertiser_id ,name, category, bid, status, budget) VALUES ({},'{}', {}, 0, 0, -1);".format(advertiser_id ,name, category)
         cursor.execute(query)
         insert_id = conn.insert_id()
         conn.commit()
