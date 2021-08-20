@@ -31,9 +31,7 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 def success_response(body):
     responseObject = {}
     responseObject['statusCode'] = 200
-    responseObject['headers'] = {}
-    responseObject['headers']['Content-Type'] = 'application/json'
-    responseObject['body'] = body
+    responseObject['response'] = body
 
     return responseObject
 
@@ -43,12 +41,12 @@ def lambda_handler(event, context):
     # Parse out query string params/payload body
     advertiser_id = event['queryStringParameters']['advertiser-id']
     
-    with conn.cursor() as cursor:
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
         query = "SELECT * FROM publisher_exclusions WHERE advertiser_id = {};".format(advertiser_id)
         cursor.execute(query)
         
-    if cursor.rowcount > 0:
-        body = cursor.fetchall()
+    if (results := cursor.fetchone()):
+        body = results
         return success_response(body)
     else:
         raise Exception('El advertiser no existe o no tiene exclusiones.')

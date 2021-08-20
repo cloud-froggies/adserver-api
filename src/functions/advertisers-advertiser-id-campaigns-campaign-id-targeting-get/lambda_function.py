@@ -31,31 +31,38 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 def success_response(body):
     responseObject = {}
     responseObject['statusCode'] = 200
-    responseObject['response'] = body
-
+    zips = []
+    for row in body:
+        zips.append(row[0])
+    responseObject['response'] = {'zip-codes': zips}
     return responseObject
 
 
 # Handler
 def lambda_handler(event, context):
     
-    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+    with conn.cursor() as cursor:
+        advertiser_id = event['queryStringParameters']['advertiser-id']
+        query = "SELECT * FROM advertisers WHERE id = {};".format(advertiser_id)
+        cursor.execute(query)
+            
+    if not (results := cursor.fetchone()):
+        raise Exception('No existe el advertiser o campaign.')
+    
+    with conn.cursor() as cursor:
         campaign_id = event['queryStringParameters']['campaign-id']
         query = "SELECT * FROM advertiser_campaigns WHERE id = {};".format(campaign_id)
         cursor.execute(query)
             
     if not (results := cursor.fetchone()):
-        raise Exception('No existe el advertiser o no tiene campaigns.')
-
-    # Parse out query string params/payload body
-    campaign_id = event['queryStringParameters']['campaign-id']
-    
-    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-        query = "SELECT * FROM ads WHERE campaign_id = {};".format(campaign_id)
+        raise Exception('No existe el advertiser o campaign.')
+        
+    with conn.cursor() as cursor:
+        query = "SELECT zip_code FROM campaign_targeting WHERE campaign_id = {};".format(campaign_id)
         cursor.execute(query)
         
-    if (results := cursor.fetchone()):
+    if (results:=cursor.fetchall()):
         body = results
         return success_response(body)
     else:
-        raise Exception('No existe el advertiser o no tiene campaigns.')
+        return {'zip-codes':[]}
