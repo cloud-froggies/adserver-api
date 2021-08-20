@@ -415,6 +415,108 @@ resource "aws_cloudwatch_log_group" "publishers_post" {
 
   retention_in_days = 30
 }
+
+#------------------------------------------------------------- publishers_delete -----------------------------------------------
+
+data "archive_file" "publishers_delete" {
+  type = "zip"
+
+  source_dir  = "${path.root}/src/functions/publishers-delete"
+  output_path = "${path.root}/src/functions/publishers-delete.zip"
+}
+
+resource "aws_s3_bucket_object" "publishers_delete" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "publishers-delete.zip"
+  source = data.archive_file.publishers_delete.output_path
+
+  etag = filemd5(data.archive_file.publishers_delete.output_path)
+}
+
+resource "aws_lambda_function" "publishers_delete" {
+  function_name = "publishers-delete"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.publishers_delete.key
+
+  runtime = "python3.8"
+  handler = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.publishers_delete.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = var.subnets
+    security_group_ids = var.security_groups
+  }
+
+  environment {
+    variables = {
+      db_endpoint = var.db_address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "publishers_delete" {
+  name = "/aws/lambda/${aws_lambda_function.publishers_delete.function_name}"
+
+  retention_in_days = 30
+}
+
+#------------------------------------------------------------- advertisers_delete -----------------------------------------------
+
+data "archive_file" "advertisers_delete" {
+  type = "zip"
+
+  source_dir  = "${path.root}/src/functions/advertisers-delete"
+  output_path = "${path.root}/src/functions/advertisers-delete.zip"
+}
+
+resource "aws_s3_bucket_object" "advertisers_delete" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "advertisers-delete.zip"
+  source = data.archive_file.advertisers_delete.output_path
+
+  etag = filemd5(data.archive_file.advertisers_delete.output_path)
+}
+
+resource "aws_lambda_function" "advertisers_delete" {
+  function_name = "advertisers-delete"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.advertisers_delete.key
+
+  runtime = "python3.8"
+  handler = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.advertisers_delete.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids = var.subnets
+    security_group_ids = var.security_groups
+  }
+
+  environment {
+    variables = {
+      db_endpoint = var.db_address
+      db_admin_user = var.db_admin_user
+      db_admin_password = var.db_admin_password
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "advertisers_delete" {
+  name = "/aws/lambda/${aws_lambda_function.advertisers_delete.function_name}"
+
+  retention_in_days = 30
+}
 #----------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "lambda_exec" {
   name = "serverless_lambda"

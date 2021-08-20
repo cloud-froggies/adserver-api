@@ -31,7 +31,7 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 def lambda_handler(event, context):
     try:
         cursor = conn.cursor()
-        query = "DELETE FROM publishers;"
+        query = "DELETE FROM advertisers;"
         cursor.execute(query)
         conn.commit()
         return 
