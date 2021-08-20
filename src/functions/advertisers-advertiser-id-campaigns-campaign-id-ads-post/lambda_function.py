@@ -38,21 +38,6 @@ def success_response(body):
 
 # Handler
 def lambda_handler(event, context):
-    try:
-        name = event['body']['name']
-        category = event['body']['category']
-        advertiser_id =  event['queryStringParameters']['advertiser-id']
-        cursor = conn.cursor()
-        query = "INSERT INTO advertiser_campaigns (advertiser_id ,name, category, bid, status, budget) VALUES ('{}','{}', {}, 0, 0, -1);".format(advertiser_id ,name, category)
-        cursor.execute(query)
-        insert_id = conn.insert_id()
-        conn.commit()
-        return success_response({'id': insert_id})
-    except:
-        raise Exception('Sin nombre o vacío.')
-
-# Handler
-def lambda_handler(event, context):
     # 400 bad request
     class BadRequestException(Exception):
         pass
@@ -68,15 +53,23 @@ def lambda_handler(event, context):
     if not (results := cursor.fetchone()):
         raise NotFoundException('No existe el advertiser.')
 
-    try:
-        name = event['body']['name']
-        category = event['body']['category']
+    with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+        campaign_id = event['queryStringParameters']['campaign-id']
+        query = "SELECT * FROM advertiser_campaigns WHERE id = {};".format(campaign_id)
+        cursor.execute(query)
         
+    if not (results := cursor.fetchone()):
+        raise NotFoundException('No existe la campaign.')
+
+    try:
+        headline = event['body']['headline']
+        description = event['body']['description']
+        url = event['body']['url']
         cursor = conn.cursor()
-        query = "INSERT INTO advertiser_campaigns (name, category) VALUES ('{}', {});".format(name, category)
+        query = "INSERT INTO ads (campaign_id, headline, description, url) VALUES ({}, '{}', '{}', '{}');".format(campaign_id, headline, description, url)
         cursor.execute(query)
         insert_id = conn.insert_id()
         conn.commit()
         return success_response({'id': insert_id})
     except:
-        raise BadRequestException('Sin nombre o vacío.')
+        raise BadRequestException('Sin headline, description o url, o vacíos.')
