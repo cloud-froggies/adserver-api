@@ -33,7 +33,7 @@ def success_response(body):
     responseObject['statusCode'] = 200
     responseObject['response'] = body
 
-    return responseObject
+    return body
 
 
 # Handler
@@ -76,6 +76,10 @@ def lambda_handler(event, context):
         headline = event['body']['headline']
         description = event['body']['description']
         url = event['body']['url']
+        if (headline and description and url):
+            pass
+        else:
+            raise BadRequestException('Sin headline, description o url, o vacíos.')
         cursor = conn.cursor()
         query = "INSERT INTO ads (campaign_id, headline, description, url) VALUES ({}, '{}', '{}', '{}');".format(campaign_id, headline, description, url)
         cursor.execute(query)

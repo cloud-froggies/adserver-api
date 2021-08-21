@@ -33,7 +33,7 @@ def success_response(body):
     responseObject['statusCode'] = 200
     responseObject['response'] = body
 
-    return responseObject
+    return body
 
 
 # Handler

@@ -33,7 +33,7 @@ def success_response(body):
     responseObject['statusCode'] = 200
     responseObject['response'] = body
 
-    return responseObject
+    return body
 
 
 # Handler
@@ -74,6 +74,12 @@ def lambda_handler(event, context):
         
     try:
         zip_codes = event['body']['zip-codes']
+        zip_code_verify = map(lambda x: type(x)==str,zip_codes)
+        if all(zip_code_verify):
+            pass
+        else:
+            raise BadRequestException('Bad request, zip codes inválidos.')
+            
         cursor = conn.cursor()
         query = "INSERT INTO campaign_targeting (campaign_id, zip_code) VALUES ({}, %s);".format(campaign_id)
         cursor.executemany(query, zip_codes)

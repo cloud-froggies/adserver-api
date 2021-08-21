@@ -35,7 +35,7 @@ def success_response(body):
     for row in body:
         zips.append(row[0])
     responseObject['response'] = {'zip-codes': zips}
-    return responseObject
+    return body
 
 
 # Handler

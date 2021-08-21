@@ -15,7 +15,7 @@ exports.handler = async (event) => {
         }
         catch(err) {
             console.log(err);
-            throw new Error(JSON.stringify({"status": 500, "messages": ['Database connection error']}));
+            throw new Error('Database connection error');
         }
     }
 
@@ -26,10 +26,10 @@ exports.handler = async (event) => {
     }
     catch(err) {
         console.log(err);
-        throw new Error(JSON.stringify({"status": 500, "messages": ['Database query error']}));
+        throw new Error('Database query error');
     }
     if (rows.length > 0)
-        return {"status": 200, "response": rows};
+        return rows;
     else
-        throw new Error(JSON.stringify({"status": 404, "messages": ['No publishers']}));
+        throw new Error('No publishers');
 }

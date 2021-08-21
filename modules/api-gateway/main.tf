@@ -75,7 +75,7 @@ resource "aws_api_gateway_integration_response" "advertisers_get_integration_res
   http_method = aws_api_gateway_method.advertisers_get.http_method
   status_code = aws_api_gateway_method_response.advertisers_get_response_404.status_code
 
-  selection_pattern = ".*404.*"
+  selection_pattern = ".*No advertisers.*"
 
     depends_on = [
     aws_api_gateway_integration.advertisers_get
@@ -166,7 +166,7 @@ resource "aws_api_gateway_integration_response" "advertisers_post_integration_re
   http_method = aws_api_gateway_method.advertisers_post.http_method
   status_code = aws_api_gateway_method_response.advertisers_post_response_400.status_code
 
-  selection_pattern = ".*400.*"
+  selection_pattern = ".*(is invalid|not found).*"
   
     depends_on = [
     aws_api_gateway_integration.advertisers_post
@@ -195,7 +195,7 @@ resource "aws_api_gateway_integration_response" "advertisers_post_integration_re
   http_method = aws_api_gateway_method.advertisers_post.http_method
   status_code = aws_api_gateway_method_response.advertisers_post_response_500.status_code
 
-  selection_pattern = ".*500.*"
+  selection_pattern = ".*Database query error.*"
   
     depends_on = [
     aws_api_gateway_integration.advertisers_post
@@ -1150,22 +1150,22 @@ resource "aws_api_gateway_integration" "advertisers_advertiser_id_campaigns_camp
   ]
 }
 
-resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_response_200" {
+resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_response_204" {
   rest_api_id = aws_api_gateway_rest_api.adserver.id
   resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_targeting.id
   http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_targeting_put.http_method
-  status_code = "200"
+  status_code = "204"
   
   response_models = {
     "application/json" = "Empty"
     }
 }
 
-resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_integration_response_200" {
+resource "aws_api_gateway_integration_response" "advertisers_advertiser_id_campaigns_campaign_id_targeting_put_integration_response_204" {
   rest_api_id = aws_api_gateway_rest_api.adserver.id
   resource_id = aws_api_gateway_resource.advertisers_advertiser_id_campaigns_campaign_id_targeting.id
   http_method = aws_api_gateway_method.advertisers_advertiser_id_campaigns_campaign_id_targeting_put.http_method
-  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_targeting_put_response_200.status_code
+  status_code = aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_targeting_put_response_204.status_code
   
     depends_on = [
     aws_api_gateway_integration.advertisers_advertiser_id_campaigns_campaign_id_targeting_put
@@ -1183,7 +1183,7 @@ resource "aws_api_gateway_method_response" "advertisers_advertiser_id_campaigns_
     }
   
   depends_on = [
-    aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_targeting_put_response_200
+    aws_api_gateway_method_response.advertisers_advertiser_id_campaigns_campaign_id_targeting_put_response_204
   ]
 }
 
@@ -1624,7 +1624,7 @@ resource "aws_api_gateway_integration_response" "publishers_get_integration_resp
   http_method = aws_api_gateway_method.publishers_get.http_method
   status_code = aws_api_gateway_method_response.publishers_get_response_404.status_code
 
-  selection_pattern = ".*404.*"
+  selection_pattern = ".*No publishers.*"
 
     depends_on = [
     aws_api_gateway_integration.publishers_get
@@ -1714,7 +1714,7 @@ resource "aws_api_gateway_integration_response" "publishers_post_integration_res
   http_method = aws_api_gateway_method.publishers_post.http_method
   status_code = aws_api_gateway_method_response.publishers_post_response_400.status_code
 
-  selection_pattern = ".*400.*"
+  selection_pattern = ".*(is invalid|not found).*"
   
     depends_on = [
     aws_api_gateway_integration.publishers_post
@@ -1743,7 +1743,7 @@ resource "aws_api_gateway_integration_response" "publishers_post_integration_res
   http_method = aws_api_gateway_method.publishers_post.http_method
   status_code = aws_api_gateway_method_response.publishers_post_response_500.status_code
 
-  selection_pattern = ".*500.*"
+  selection_pattern = ".*Database query error.*"
   
     depends_on = [
     aws_api_gateway_integration.publishers_post

@@ -15,24 +15,31 @@ exports.handler = async (event) => {
         }
         catch(err) {
             console.log(err);
-            throw new Error(JSON.stringify({'status': 500, 'messages': ['Database connection error']}));
+            throw new Error('Database connection error');
         }
     }
 
     if (!('name' in event)) {
-        throw new Error(JSON.stringify({'status': 400, 'messages': ['Name not found.']}));
+        throw new Error('Name not found.');
     }
     if (event['name'].length < 1) {
-        throw new Error(JSON.stringify({'status': 400, 'messages': ['Name is invalid.']}));
+        throw new Error('Name is invalid.');
+    }
+
+    if (!('commission' in event)) {
+        throw new Error('commission not found.');
+    }
+    if (event['commission'].length < 1) {
+        throw new Error('commission is invalid.');
     }
 
     var result;
     try {
         [result] = await connection.query('INSERT INTO publishers SET name = ?, commission= ?', [event['name'],event['commission']]);
         console.log(result);
-        return {'status': 200, 'response': {'id': result.insertId}};
+        return {'id': result.insertId};
     } catch(err) {
         console.log(err);
-        throw new Error(JSON.stringify({'status': 500, 'messages': ['Database query error']}));
+        throw new Error('Database query error');
     }
 }
