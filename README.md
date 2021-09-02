@@ -22,3 +22,10 @@ terraform init
 terraform plan -var-file="secret.tfvars" 
 terraform apply -var-file="secret.tfvars"
 ```
+
+# DB commands
+```
+mysql -u admin -h froggy-db.cc9gjm0rmktt.us-east-2.rds.amazonaws.com -p
+USE configuration;
+
+```
